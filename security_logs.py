@@ -4,17 +4,23 @@
 def count_failed_logins(
     events: list[dict[str, str]]
 ) -> dict[str, int]:
-
     counts: dict[str, int] = {}
 
     for event in events:
-        # status가 failed가 아니면 건너띄기 (Guard Clause)
+        # Step 1: 필수 필드 검증 
+        if "status" not in event:
+            raise ValueError("Missing required field: status")
+
+        if "ip" not in event:
+            raise ValueError("Missing required field: ip")
+
+        # Step 2: 로그인 실패만 필터링 (Guard Clause)
         if event["status"] != "failed":
             continue
 
-        # 현재 IP의 실패 횟수를 1 증가시킴
+        # Step 3: IP별 실패 횟수 집계
         ip = event["ip"]
-        # Dictionary Counter Pattern
+        # Dictionary Counter Pattern(현재 IP의 실패 횟수를 1 증가시킴)
         counts[ip] = counts.get(ip, 0) + 1
     
     return counts

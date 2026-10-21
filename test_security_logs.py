@@ -1,5 +1,6 @@
 # Pytest - Edge Case Test
 from security_logs import count_failed_logins
+import pytest
 
 
 # Test1: 동일 IP의 실패 이벤트만 존재할 경우
@@ -50,3 +51,28 @@ def test_multiple_ips() -> None:
     expected = {"192.0.2.10": 2, "192.0.2.20": 1}
 
     assert actual == expected
+
+# Test 5: status field 누락 시 명확한 오류 발생
+def test_missing_status_raises_value_error() -> None:
+    logs = [
+        {"ip": "192.0.2.10"}
+    ]
+
+    # 이 구간에서 ValueError 가 발생하는지 검증한다.
+    with pytest.raises(
+        ValueError,
+        match="Missing required field: status"
+    ):
+        count_failed_logins(logs)
+
+# Test 6: IP field 누락 시 명확한 오류 발생
+def test_missing_ip_raises_value_error() -> None:
+    logs = [
+        {"status": "failed"}
+    ]
+
+    with pytest.raises(
+        ValueError,
+        match = "Missing required field: ip"
+    ):
+        count_failed_logins(logs)
