@@ -1,5 +1,5 @@
 # Pytest - Edge Case Test
-from security_logs import count_failed_logins
+from purple_sentinel.security_logs import count_failed_logins
 import pytest
 
 
